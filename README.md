@@ -1,2 +1,5 @@
 # tic-tac-toe
-tic tac toe game
+
+a client side tic-tac-toe game
+
+![game](game.png)
