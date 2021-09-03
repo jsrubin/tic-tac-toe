@@ -29,7 +29,7 @@ const gameLogicInit = ({
 
 const findWinner = ({ turnCount, winStates, boardState }) => {
   if (turnCount >= 5) {
-    return winStates.find(winCondition => {
+    return winStates.find((winCondition) => {
       const pieceValue =
         boardState[winCondition[0][0]][winCondition[0][1]].value;
       const compare1 = boardState[winCondition[1][0]][winCondition[1][1]].value;
@@ -37,6 +37,7 @@ const findWinner = ({ turnCount, winStates, boardState }) => {
       if (pieceValue && pieceValue === compare1 && pieceValue === compare2) {
         return true;
       }
+      return false;
     });
   }
   return "";
@@ -53,7 +54,7 @@ const onSwitchPlayer = ({ setPlayer, currentPlayer, players }) => {
 };
 
 const isSpaceOpen = ({ cell, boardState }) => {
-  const dim = cell.split(",").map(val => parseInt(val));
+  const dim = cell.split(",").map((val) => parseInt(val));
   return !boardState[dim[0]][dim[1]].value ? true : false;
 };
 
@@ -62,7 +63,7 @@ const isBoardFilled = ({ boardState, turnCount, totalTurns }) => {
     return false;
   }
   return boardState.reduce((acc, row) => {
-    if (row.find(col => !col.value)) {
+    if (row.find((col) => !col.value)) {
       acc = false;
     }
     return acc;
@@ -78,9 +79,9 @@ const onPlacePiece = ({
   onTurnCount,
   turnCount
 }) => {
-  return cell => {
+  return (cell) => {
     if (isSpaceOpen({ cell, boardState })) {
-      const dim = cell.split(",").map(val => parseInt(val));
+      const dim = cell.split(",").map((val) => parseInt(val));
       boardState[dim[0]][dim[1]].value = currentPlayer.piece;
       setBoardState(boardState);
       incrementTurn({ onTurnCount, turnCount });
@@ -98,7 +99,7 @@ export const usePlayLogic = () => {
     turnCount,
     onTurnCount,
     totalTurns,
-    gameBoard,
+    GameBoard,
     winStates,
     haveWinner,
     onWinner
@@ -119,15 +120,19 @@ export const usePlayLogic = () => {
   const onReset = () => {
     onTurnCount(0);
     setPlayer(players[0]);
-    setBoardState(gameBoard);
+    GameBoard.reset();
+    setBoardState(GameBoard.board);
     onWinner(false);
   };
 
-  useEffect(() => {
-    if (turnCount > 0) {
-      gameLogic();
-    }
-  }, [turnCount]);
+  useEffect(
+    () => {
+      if (turnCount > 0) {
+        gameLogic();
+      }
+    }, // eslint-disable-next-line
+    [turnCount]
+  );
 
   return {
     currentPlayer,
