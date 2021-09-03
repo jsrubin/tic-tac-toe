@@ -27,6 +27,67 @@ const gameLogicInit = ({
   };
 };
 
+const findWinner = ({ turnCount, winStates, boardState }) => {
+  if (turnCount >= 5) {
+    return winStates.find(winCondition => {
+      const pieceValue =
+        boardState[winCondition[0][0]][winCondition[0][1]].value;
+      const compare1 = boardState[winCondition[1][0]][winCondition[1][1]].value;
+      const compare2 = boardState[winCondition[2][0]][winCondition[2][1]].value;
+      if (pieceValue && pieceValue === compare1 && pieceValue === compare2) {
+        return true;
+      }
+    });
+  }
+  return "";
+};
+
+const incrementTurn = ({ onTurnCount, turnCount }) => {
+  onTurnCount(turnCount + 1);
+};
+
+const onSwitchPlayer = ({ setPlayer, currentPlayer, players }) => {
+  return () => {
+    setPlayer(currentPlayer.id === 0 ? players[1] : players[0]);
+  };
+};
+
+const isSpaceOpen = ({ cell, boardState }) => {
+  const dim = cell.split(",").map(val => parseInt(val));
+  return !boardState[dim[0]][dim[1]].value ? true : false;
+};
+
+const isBoardFilled = ({ boardState, turnCount, totalTurns }) => {
+  if (turnCount < totalTurns) {
+    return false;
+  }
+  return boardState.reduce((acc, row) => {
+    if (row.find(col => !col.value)) {
+      acc = false;
+    }
+    return acc;
+  }, true);
+};
+
+const onPlacePiece = ({
+  isSpaceOpen,
+  boardState,
+  setBoardState,
+  currentPlayer,
+  incrementTurn,
+  onTurnCount,
+  turnCount
+}) => {
+  return cell => {
+    if (isSpaceOpen({ cell, boardState })) {
+      const dim = cell.split(",").map(val => parseInt(val));
+      boardState[dim[0]][dim[1]].value = currentPlayer.piece;
+      setBoardState(boardState);
+      incrementTurn({ onTurnCount, turnCount });
+    }
+  };
+};
+
 export const usePlayLogic = () => {
   const {
     currentPlayer,
@@ -43,76 +104,16 @@ export const usePlayLogic = () => {
     onWinner
   } = useContext(AppContext);
 
-  const findWinner = ({ turnCount, winStates, boardState }) => {
-    if (turnCount >= 5) {
-      return winStates.find(winCondition => {
-        const pieceValue =
-          boardState[winCondition[0][0]][winCondition[0][1]].value;
-        const compare1 =
-          boardState[winCondition[1][0]][winCondition[1][1]].value;
-        const compare2 =
-          boardState[winCondition[2][0]][winCondition[2][1]].value;
-        if (pieceValue && pieceValue === compare1 && pieceValue === compare2) {
-          console.log(`WINNER: ${pieceValue} = ${compare1} = ${compare2}`);
-          return true;
-        }
-      });
-    }
-    return "";
-  };
-
-  const incrementTurn = () => {
-    onTurnCount(turnCount + 1);
-    console.log("turn: ", turnCount + 1);
-  };
-
-  const onSwitchPlayer = () => {
-    setPlayer(currentPlayer.id === 0 ? players[1] : players[0]);
-  };
-
-  const isSpaceOpen = (cell, boardState) => {
-    const dim = cell.split(",").map(val => parseInt(val));
-    return !boardState[dim[0]][dim[1]].value ? true : false;
-  };
-
-  // check for no more open spaces, ie. tie, and end game
-  const isBoardFilled = ({ boardState }) => {
-    if (turnCount < totalTurns) {
-      return false;
-    }
-    return boardState.reduce((acc, row) => {
-      if (row.find(col => !col.value)) {
-        acc = false;
-      }
-      return acc;
-    }, true);
-  };
-
-  const place = ({ cell, boardState, value }) => {
-    if (isSpaceOpen(cell, boardState)) {
-      const dim = cell.split(",").map(val => parseInt(val));
-      boardState[dim[0]][dim[1]].value = value;
-      setBoardState(boardState);
-      incrementTurn();
-    }
-  };
-
-  const onPlacePiece = cell => {
-    place({ cell, boardState, value: currentPlayer.piece });
-  };
-
   const gameLogic = gameLogicInit({
     boardState,
     haveWinner,
-    isSpaceOpen,
-    place,
     findWinner,
     onWinner,
     currentPlayer,
     turnCount,
     totalTurns,
     winStates,
-    onSwitchPlayer
+    onSwitchPlayer: onSwitchPlayer({ setPlayer, currentPlayer, players })
   });
 
   const onReset = () => {
@@ -131,10 +132,16 @@ export const usePlayLogic = () => {
   return {
     currentPlayer,
     boardState,
-    onPlacePiece,
-    isBoardFilled,
-    onPlacePiece,
-    isBoardFilled: isBoardFilled({ boardState }),
+    onPlacePiece: onPlacePiece({
+      isSpaceOpen,
+      boardState,
+      setBoardState,
+      currentPlayer,
+      incrementTurn,
+      onTurnCount,
+      turnCount
+    }),
+    isBoardFilled: isBoardFilled({ boardState, turnCount, totalTurns }),
     onReset,
     haveWinner
   };

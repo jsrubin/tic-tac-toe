@@ -49,27 +49,31 @@ const buildGameBoard = ({ boardState, onClick, winState }) => {
   return board;
 };
 
-const GameBoard = props => {
-  const { boardState, onPlacePiece, currentPlayer, haveWinner, onReset } =
+const GameBoard = () => {
+  const { boardState, onPlacePiece, currentPlayer, haveWinner } =
     usePlayLogic();
-
-  const onClick = cell => {
-    onPlacePiece(cell);
-  };
 
   const board = useMemo(() => {
     return buildGameBoard({
       boardState,
-      onClick,
+      onClick: onPlacePiece,
       winState: haveWinner.winState
     });
   }, [currentPlayer.id, haveWinner]);
 
   return (
+    <Table>
+      <tbody>{board}</tbody>
+    </Table>
+  );
+};
+
+const GameBoardContainer = () => {
+  const { haveWinner, onReset } = usePlayLogic();
+
+  return (
     <div>
-      <Table>
-        <tbody>{board}</tbody>
-      </Table>
+      <GameBoard />
       <Modal
         title="GAME OVER"
         visible={haveWinner ? true : false}
@@ -84,4 +88,4 @@ const GameBoard = props => {
   );
 };
 
-export default GameBoard;
+export default GameBoardContainer;
