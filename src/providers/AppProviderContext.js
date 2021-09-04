@@ -1,21 +1,35 @@
 import React, { useState, useMemo } from "react";
 import Board from "../class/Board";
+import Player, { PlayerMoves } from "../class/Player";
+import { useCounter, usePlayerState } from "../helpers/hooks";
 import config from "../config/default.json";
 
 export const AppContext = React.createContext({});
+
+const addPlayer = (player) => {
+  const p = new Player(player);
+  return new PlayerMoves(p);
+};
+
+const setupPlayers = (players) => {
+  return players.map((player) => addPlayer(player));
+};
 
 const AppContextProvider = (props) => {
   const { children } = props;
 
   const { boardDimension, players, winStates } = config;
+  const playerList = setupPlayers(players);
 
   const GameBoard = useMemo(() => {
     return new Board();
   }, []);
 
-  const [turnCount, onTurnCount] = useState(0);
+  const { turnCount, increment, reset } = useCounter();
+  const { currentPlayer, switchPlayer, resetPlayer } =
+    usePlayerState(playerList);
+
   const [hasStarted, onStart] = useState(false);
-  const [currentPlayer, setPlayer] = useState(players[0]);
   const [boardState, setBoardState] = useState(GameBoard.board);
   const [haveWinner, onWinner] = useState(false);
 
@@ -25,12 +39,14 @@ const AppContextProvider = (props) => {
     hasStarted,
     onStart,
     currentPlayer,
-    setPlayer,
-    players,
+    switchPlayer,
+    resetPlayer,
+    players: playerList,
     boardState,
     setBoardState,
     turnCount,
-    onTurnCount,
+    resetCount: reset,
+    increment,
     totalTurns,
     GameBoard,
     winStates,

@@ -2,7 +2,7 @@ import React from "react";
 import { usePlayLogic } from "../biz/playLogic";
 import GameBoard from "./GameBoard";
 
-const GameView = props => {
+const GameView = (props) => {
   const { currentPlayer, isBoardFilled } = usePlayLogic();
   return (
     <div className="App">
