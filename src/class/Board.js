@@ -1,3 +1,6 @@
+import config from "../config/default.json";
+const { boardDimension, winStates } = config;
+
 /**
  * @class
  * Board
@@ -12,7 +15,8 @@ class Board {
       Array.isArray(props.dimension) &&
       props.dimension.length === 2
         ? props.dimension
-        : [3, 3];
+        : boardDimension;
+    this.winConditions = winStates;
     // initialize board
     this.board = this.generateBoard(this.boardDimension);
     this.totalTurns = this.boardDimension[0] * this.boardDimension[1];
@@ -43,6 +47,24 @@ class Board {
   isSpaceOpen(cell) {
     const dim = cell.split(",").map((val) => parseInt(val));
     return !this.board[dim[0]][dim[1]].value ? true : false;
+  }
+
+  hasWinner() {
+    return this.winConditions.find((winCondition) => {
+      const pieceValue =
+        this.board[winCondition[0][0]][winCondition[0][1]].value;
+      const compare1 = this.board[winCondition[1][0]][winCondition[1][1]].value;
+      const compare2 = this.board[winCondition[2][0]][winCondition[2][1]].value;
+      if (pieceValue && pieceValue === compare1 && pieceValue === compare2) {
+        return true;
+      }
+      return false;
+    });
+  }
+
+  update(cell, value) {
+    const dim = cell.split(",").map((val) => parseInt(val));
+    this.board[dim[0]][dim[1]].value = value;
   }
 
   // re-initialize board

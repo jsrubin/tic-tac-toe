@@ -30,7 +30,6 @@ const AppContextProvider = (props) => {
     usePlayerState(playerList);
 
   const [hasStarted, onStart] = useState(false);
-  const [boardState, setBoardState] = useState(GameBoard.board);
   const [haveWinner, onWinner] = useState(false);
 
   const totalTurns = boardDimension[0] * boardDimension[1];
@@ -42,8 +41,6 @@ const AppContextProvider = (props) => {
     switchPlayer,
     resetPlayer,
     players: playerList,
-    boardState,
-    setBoardState,
     turnCount,
     resetCount: reset,
     increment,

@@ -2,10 +2,14 @@ import React, { useMemo } from "react";
 import styled from "styled-components";
 import { usePlayLogic } from "../biz/playLogic";
 
+const Table = styled.table`
+  font-size: 2.5rem;
+`;
+
 const Td = styled.td`
   padding: 8px;
-  height: 20px;
-  width: 20px;
+  height: 5rem;
+  width: 5rem;
   border-right: ${(props) => (props.borderRight ? "1px solid white" : "")};
   border-bottom: ${(props) => (props.borderBottom ? "1px solid white" : "")};
 `;
@@ -62,9 +66,9 @@ const Board = () => {
   );
 
   return (
-    <table>
+    <Table>
       <tbody>{board}</tbody>
-    </table>
+    </Table>
   );
 };
 

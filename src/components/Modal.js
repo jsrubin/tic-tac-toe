@@ -3,10 +3,13 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 const ModalDiv = styled.div`
-  position: fixed;
-  top: 180px;
-  left: 30%;
-  width: 500px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -120px;
+  margin-top: -150px;
+
+  width: 15rem;
   background: white;
   border: 1px solid #ccc;
   transition: 1.1s ease-out;

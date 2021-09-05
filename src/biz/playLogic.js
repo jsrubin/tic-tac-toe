@@ -2,19 +2,18 @@ import { useContext, useEffect } from "react";
 import { AppContext } from "../providers/AppProviderContext";
 
 const gameFlowLogicInit = ({
-  boardState,
   haveWinner,
   findWinner,
   onWinner,
   currentPlayer,
   turnCount,
   totalTurns,
-  winStates,
+  GameBoard,
   switchPlayer
 }) => {
   return () => {
     // if for win then end game
-    const winStateFound = findWinner({ turnCount, winStates, boardState });
+    const winStateFound = findWinner({ turnCount, GameBoard });
     if (winStateFound) {
       return onWinner({ winner: currentPlayer.name, winState: winStateFound });
     }
@@ -27,34 +26,17 @@ const gameFlowLogicInit = ({
   };
 };
 
-const findWinner = ({ turnCount, winStates, boardState }) => {
+const findWinner = ({ turnCount, GameBoard }) => {
   if (turnCount >= 5) {
-    return winStates.find((winCondition) => {
-      const pieceValue =
-        boardState[winCondition[0][0]][winCondition[0][1]].value;
-      const compare1 = boardState[winCondition[1][0]][winCondition[1][1]].value;
-      const compare2 = boardState[winCondition[2][0]][winCondition[2][1]].value;
-      if (pieceValue && pieceValue === compare1 && pieceValue === compare2) {
-        return true;
-      }
-      return false;
-    });
+    return GameBoard.hasWinner();
   }
   return "";
 };
 
-const onPlacePiece = ({
-  GameBoard,
-  boardState,
-  setBoardState,
-  currentPlayer,
-  increment
-}) => {
+const onPlacePiece = ({ GameBoard, currentPlayer, increment }) => {
   return (cell) => {
     if (GameBoard.isSpaceOpen(cell)) {
-      const dim = cell.split(",").map((val) => parseInt(val));
-      boardState[dim[0]][dim[1]].value = currentPlayer.piece;
-      setBoardState(boardState);
+      GameBoard.update(cell, currentPlayer.piece);
       increment();
     }
   };
@@ -65,35 +47,29 @@ export const usePlayLogic = () => {
     currentPlayer,
     switchPlayer,
     resetPlayer,
-    boardState,
-    setBoardState,
     turnCount,
     resetCount,
     increment,
     totalTurns,
     GameBoard,
-    winStates,
     haveWinner,
     onWinner
   } = useContext(AppContext);
 
   const gameLogic = gameFlowLogicInit({
-    boardState,
     haveWinner,
     findWinner,
     onWinner,
     currentPlayer,
     turnCount,
     totalTurns,
-    winStates,
+    GameBoard,
     switchPlayer
   });
 
   const onReset = () => {
     resetCount();
     resetPlayer();
-    GameBoard.reset();
-    // setBoardState(GameBoard.board);
     GameBoard.reset();
     onWinner(false);
   };
@@ -108,12 +84,10 @@ export const usePlayLogic = () => {
   );
 
   return {
+    boardState: GameBoard.board,
     currentPlayer,
-    boardState,
     onPlacePiece: onPlacePiece({
       GameBoard,
-      boardState,
-      setBoardState,
       currentPlayer,
       increment
     }),
