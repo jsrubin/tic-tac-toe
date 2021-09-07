@@ -4,7 +4,7 @@ import Layout from "../components/Layout";
 import { AUTH_QUERY } from "../api";
 
 export const userCan = (WrapperComponent) => (props) => {
-  const { data, loading, error } = useQuery(AUTH_QUERY);
+  const { data, loading } = useQuery(AUTH_QUERY);
 
   if (loading) {
     return <Layout title="Loading..." />;

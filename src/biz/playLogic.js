@@ -53,7 +53,8 @@ export const usePlayLogic = () => {
     totalTurns,
     GameBoard,
     haveWinner,
-    onWinner
+    onWinner,
+    players
   } = useContext(AppContext);
 
   const gameLogic = gameFlowLogicInit({
@@ -93,6 +94,9 @@ export const usePlayLogic = () => {
     }),
     isBoardFilled: GameBoard.isBoardFilled(),
     onReset,
-    haveWinner
+    haveWinner,
+    turnCount,
+    totalTurns,
+    players
   };
 };

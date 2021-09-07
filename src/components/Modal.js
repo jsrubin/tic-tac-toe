@@ -22,10 +22,13 @@ const Header = styled.div`
   border-bottom: 1px solid #ccc;
   padding: 1rem;
   margin: 0;
+  font-size: 1.8rem;
+  background-color: antiquewhite;
 `;
 const Body = styled.div`
   color: #000;
   padding: 1rem;
+  font-size: 1.6rem;
 `;
 const Footer = styled.div`
   border-top: 1px solid #ccc;
@@ -38,8 +41,11 @@ const CloseBtn = styled.button`
   background: #78f89f;
   border-radius: 5px;
   padding: 0.5rem 1rem;
-  font-size: 0.8rem;
+  font-size: 1.2rem;
+  border: 2px solid lightgrey;
   line-height: 1;
+  width: 10rem;
+  height: 4rem;
 `;
 
 class Modal extends React.Component {

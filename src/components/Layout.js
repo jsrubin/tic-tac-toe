@@ -22,11 +22,11 @@ const Layout = (props) => {
 
   return (
     <div className="App">
-      <header className="App-header">
-        {title}
-        <p style={{ fontSize: ".8rem" }}>{subTitle}</p>
+      <header className="App-header">{title}</header>
+      <div className="App-body">
+        <p style={{ fontSize: "1.8rem" }}>{subTitle}</p>
         {children}
-      </header>
+      </div>
       <footer className="App-footer">
         view code on{" "}
         <A href={gitHubUrl} target="_blank">
