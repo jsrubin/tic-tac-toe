@@ -18,15 +18,20 @@ function allowDrop(ev) {
   ev.preventDefault();
 }
 
-function drop(ev) {
-  ev.preventDefault();
-  var data = ev.dataTransfer.getData("text");
-  console.log("drop: ", data);
-  ev.target.appendChild(document.getElementById(data));
-  // update attribute draggable=false
-}
+const onDrop = (onClick) => {
+  return (ev, cell) => {
+    ev.preventDefault();
+    var data = ev.dataTransfer.getData("text");
+    const elem = document.getElementById(data);
+    elem.style.width = null;
+    elem.style.height = null;
+    elem.setAttribute("draggable", false);
+    ev.target.appendChild(elem);
+    onClick(cell);
+  };
+};
 
-const buildColumns = (row, cols, onClick, highlightCols) => {
+const buildColumns = (row, cols, onClick, onDrop, highlightCols) => {
   return cols.map((col, i) => {
     const highlight = highlightCols
       ? highlightCols.find((arr) => arr[0] === row && arr[1] === i)
@@ -38,7 +43,7 @@ const buildColumns = (row, cols, onClick, highlightCols) => {
         borderRight={i < 2 ? true : false}
         onClick={() => onClick(col.cell)}
         onDragOver={allowDrop}
-        onDrop={drop}
+        onDrop={(e) => onDrop(e, col.cell)}
       >
         {highlight ? (
           <div style={{ color: "chartreuse", fontWeight: "bolder" }}>
@@ -52,12 +57,12 @@ const buildColumns = (row, cols, onClick, highlightCols) => {
   });
 };
 
-const buildGameBoard = ({ boardState, onClick, highlightCols }) => {
+const buildGameBoard = ({ boardState, onClick, onDrop, highlightCols }) => {
   let board = [];
   boardState.forEach((row, i) => {
     board.push(
       <tr key={`board-row-${i}`}>
-        {buildColumns(i, row, onClick, highlightCols)}
+        {buildColumns(i, row, onClick, onDrop, highlightCols)}
       </tr>
     );
   });
@@ -73,6 +78,7 @@ const Board = () => {
       return buildGameBoard({
         boardState,
         onClick: onPlacePiece,
+        onDrop: onDrop(onPlacePiece),
         highlightCols: haveWinner.winState
       });
     }, // eslint-disable-next-line

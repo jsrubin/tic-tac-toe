@@ -4,16 +4,23 @@ import PropTypes from "prop-types";
 
 const Div = styled.div`
   font-size: 2rem;
+  height: 40px;
+  width: 40px;
+  ${(props) => (props.visible ? "" : "display: none;")}
 `;
 
-function drag(ev) {
-  console.log("drag piece: ", ev);
+const drag = (ev) => {
   ev.dataTransfer.setData("text", ev.target.id);
-}
+};
 
-const Piece = ({ piece, draggable = false }) => {
+const Piece = ({ turnCount, piece, draggable = false, visible = false }) => {
   return (
-    <Div id="game-piece" draggable={draggable} onDragStart={drag}>
+    <Div
+      id={`game-piece-${turnCount}`}
+      draggable={draggable}
+      onDragStart={drag}
+      visible={visible}
+    >
       {piece}
     </Div>
   );
