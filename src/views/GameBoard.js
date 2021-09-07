@@ -1,8 +1,9 @@
-import React, { useMemo } from "react";
+import React, { useContext, useMemo } from "react";
 import { usePlayLogic } from "../biz/playLogic";
 import Modal from "../components/Modal";
 import GameBoard from "../components/Board";
 import Piece from "../components/Piece";
+import { AppContext } from "../providers/AppProviderContext";
 
 const buildGamePieces = ({ totalTurns, players, turnCount }) => {
   return Array(totalTurns)
@@ -21,6 +22,7 @@ const buildGamePieces = ({ totalTurns, players, turnCount }) => {
 };
 
 const GameBoardContainer = () => {
+  const { draggableEnabled } = useContext(AppContext);
   const { haveWinner, onReset, turnCount, totalTurns, players } =
     usePlayLogic();
 
@@ -34,16 +36,18 @@ const GameBoardContainer = () => {
   return (
     <div>
       <div style={{ display: "flex" }}>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center"
-          }}
-        >
-          NEXT PIECE
-          {nextPieces}
-        </div>
+        {draggableEnabled ? (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center"
+            }}
+          >
+            NEXT PIECE
+            {nextPieces}
+          </div>
+        ) : null}
         <GameBoard />
       </div>
       <Modal

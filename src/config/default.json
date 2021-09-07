@@ -1,5 +1,6 @@
 {
     "gitHubUrl": "https://github.com/jsrubin/tic-tac-toe",
+    "draggableEnabled": false,
     "boardDimension": [
         3,
         3

@@ -18,7 +18,7 @@ const setupPlayers = (players) => {
 const AppContextProvider = (props) => {
   const { children } = props;
 
-  const { boardDimension, players, winStates } = config;
+  const { boardDimension, players, winStates, draggableEnabled } = config;
   const playerList = setupPlayers(players);
 
   const GameBoard = useMemo(() => {
@@ -48,7 +48,8 @@ const AppContextProvider = (props) => {
     GameBoard,
     winStates,
     haveWinner,
-    onWinner
+    onWinner,
+    draggableEnabled
   };
 
   return (
