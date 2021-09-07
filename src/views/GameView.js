@@ -1,23 +1,27 @@
 import React from "react";
-import { usePlayLogic } from "../biz/playLogic";
+import Layout from "../components/Layout";
 import GameBoard from "./GameBoard";
+import { usePlayLogic } from "../biz/playLogic";
+
+const SubTitle = ({ isBoardFilled, currentPlayer }) => {
+  return (
+    <React.Fragment>
+      {isBoardFilled
+        ? "Game Over"
+        : `Turn: Player ${currentPlayer.name} (${currentPlayer.piece})`}
+    </React.Fragment>
+  );
+};
 
 const GameView = (props) => {
   const { currentPlayer, isBoardFilled } = usePlayLogic();
   return (
-    <div className="App">
-      <header className="App-header">
-        Tic Tac Toe
-        <p>
-          <div style={{ fontSize: "1.2rem" }}>
-            {isBoardFilled
-              ? "Game Over"
-              : `Turn: Player ${currentPlayer.name} (${currentPlayer.piece})`}
-          </div>
-        </p>
-        <GameBoard />
-      </header>
-    </div>
+    <Layout
+      title="Tic Tac Toe"
+      subTitle={SubTitle({ isBoardFilled, currentPlayer })}
+    >
+      <GameBoard />
+    </Layout>
   );
 };
 

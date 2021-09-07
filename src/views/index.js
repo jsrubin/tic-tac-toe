@@ -2,13 +2,21 @@ import React from "react";
 import { useStartLogic } from "../biz/startLogic";
 import StartView from "./StartView";
 import GameView from "./GameView";
+import { userCan } from "../helpers/auth";
 
 const TitleView = () => {
-  const { hasStarted, onClick } = useStartLogic();
+  const { hasStarted, onClick, onlineEnabled, titleMsg } = useStartLogic();
+
   if (hasStarted) {
     return <GameView />;
   }
-  return <StartView onClick={onClick} />;
+  return (
+    <StartView
+      onClick={onClick}
+      onlineEnabled={onlineEnabled}
+      titleMsg={titleMsg}
+    />
+  );
 };
 
-export default TitleView;
+export default userCan(TitleView);

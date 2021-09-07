@@ -5,7 +5,7 @@ import styled from "styled-components";
 const ModalDiv = styled.div`
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 20%;
   margin-left: -120px;
   margin-top: -150px;
 
@@ -13,11 +13,8 @@ const ModalDiv = styled.div`
   background: white;
   border: 1px solid #ccc;
   transition: 1.1s ease-out;
-  filter: blur(0);
-  transform: scale(1);
-  opacity: 1;
-  visibility: visible;
-  box-shadow: 0 5px 15px rgb(255 255 255 / 50%);
+
+  box-shadow: 8px 8px 6px rgb(255 255 255 / 0.2);
 `;
 
 const Header = styled.div`

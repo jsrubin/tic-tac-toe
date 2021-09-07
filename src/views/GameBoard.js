@@ -2,12 +2,14 @@ import React from "react";
 import { usePlayLogic } from "../biz/playLogic";
 import Modal from "../components/Modal";
 import GameBoard from "../components/Board";
+import Piece from "../components/Piece";
 
 const GameBoardContainer = () => {
-  const { haveWinner, onReset } = usePlayLogic();
+  const { haveWinner, onReset, currentPlayer } = usePlayLogic();
 
   return (
     <div>
+      {/* <Piece piece={currentPlayer.piece} draggable={true} /> */}
       <GameBoard />
       <Modal
         title="GAME OVER"

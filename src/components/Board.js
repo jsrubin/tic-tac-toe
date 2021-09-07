@@ -14,6 +14,18 @@ const Td = styled.td`
   border-bottom: ${(props) => (props.borderBottom ? "1px solid white" : "")};
 `;
 
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+function drop(ev) {
+  ev.preventDefault();
+  var data = ev.dataTransfer.getData("text");
+  console.log("drop: ", data);
+  ev.target.appendChild(document.getElementById(data));
+  // update attribute draggable=false
+}
+
 const buildColumns = (row, cols, onClick, highlightCols) => {
   return cols.map((col, i) => {
     const highlight = highlightCols
@@ -25,6 +37,8 @@ const buildColumns = (row, cols, onClick, highlightCols) => {
         borderBottom={row < 2 ? true : false}
         borderRight={i < 2 ? true : false}
         onClick={() => onClick(col.cell)}
+        onDragOver={allowDrop}
+        onDrop={drop}
       >
         {highlight ? (
           <div style={{ color: "chartreuse", fontWeight: "bolder" }}>

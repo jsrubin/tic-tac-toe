@@ -1,15 +1,19 @@
 import React from "react";
+import Layout from "../components/Layout";
 import Button from "../components/Button";
+import styled from "styled-components";
 
-const StartView = props => {
+const DivFlex = styled.div`
+  display: flex;
+`;
+
+const StartView = (props) => {
   return (
-    <div className="App">
-      <header className="App-header">
-        Tic Tac Toe
-        <p></p>
+    <Layout title="Tic Tac Toe" subTitle={props.titleMsg}>
+      <DivFlex>
         <Button
           onClick={props.onClick}
-          label="START"
+          label="LOCAL PLAY"
           styles={{
             width: "100px",
             height: "40px",
@@ -17,8 +21,20 @@ const StartView = props => {
             backgroundColor: "#78f89f"
           }}
         />
-      </header>
-    </div>
+        {props.onlineEnabled ? (
+          <Button
+            onClick={props.onClick}
+            label="ONLINE PLAY"
+            styles={{
+              width: "100px",
+              height: "40px",
+              borderRadius: "8px",
+              backgroundColor: "#78f89f"
+            }}
+          />
+        ) : null}
+      </DivFlex>
+    </Layout>
   );
 };
 
