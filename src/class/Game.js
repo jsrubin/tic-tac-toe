@@ -10,6 +10,10 @@ class Game {
   #id = new Date().getTime();
   #status = StatusesEnum.NEW;
 
+  get status() {
+    return this.#status;
+  }
+
   start() {
     this.#status = StatusesEnum.ACTIVE;
     console.log(`Start game. Status ${this.#status}`);

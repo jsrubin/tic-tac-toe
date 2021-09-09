@@ -70,7 +70,7 @@ const buildGameBoard = ({ boardState, onClick, onDrop, highlightCols }) => {
 };
 
 const Board = () => {
-  const { boardState, onPlacePiece, currentPlayer, haveWinner } =
+  const { boardState, onPlacePiece, currentPlayer, haveWinner, winState } =
     usePlayLogic();
 
   const board = useMemo(
@@ -79,7 +79,7 @@ const Board = () => {
         boardState,
         onClick: onPlacePiece,
         onDrop: onDrop(onPlacePiece),
-        highlightCols: haveWinner.winState
+        highlightCols: winState
       });
     }, // eslint-disable-next-line
     [currentPlayer.id, haveWinner]

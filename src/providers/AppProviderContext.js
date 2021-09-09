@@ -1,14 +1,14 @@
 import React, { useState, useMemo } from "react";
 import Board from "../class/Board";
-import Player, { PlayerMoves } from "../class/Player";
-import { useCounter, usePlayerState } from "../helpers/hooks";
+import TicTacToe from "../class/TicTacToe";
+import Player from "../class/Player";
+import { useCounter } from "../helpers/hooks";
 import config from "../config/default.json";
 
 export const AppContext = React.createContext({});
 
 const addPlayer = (player) => {
-  const p = new Player(player);
-  return new PlayerMoves(p);
+  return new Player({ user: player, ...player });
 };
 
 const setupPlayers = (players) => {
@@ -21,35 +21,40 @@ const AppContextProvider = (props) => {
   const { boardDimension, players, winStates, draggableEnabled } = config;
   const playerList = setupPlayers(players);
 
-  const GameBoard = useMemo(() => {
-    return new Board();
-  }, []);
-
-  const { turnCount, increment, reset } = useCounter();
-  const { currentPlayer, switchPlayer, resetPlayer } =
-    usePlayerState(playerList);
+  const { count: turnCount, increment: incrementTurn, reset } = useCounter();
+  const { count, increment } = useCounter();
 
   const [hasStarted, onStart] = useState(false);
   const [haveWinner, onWinner] = useState(false);
 
-  const totalTurns = boardDimension[0] * boardDimension[1];
+  const Game = useMemo(
+    () => {
+      const board = new Board({ boardDimension });
+      return new TicTacToe({
+        players: playerList,
+        GameBoard: board,
+        incrementTurn,
+        onWinner
+      });
+    }, // eslint-disable-next-line
+    [count]
+  );
+
+  const onReset = () => {
+    onWinner(false);
+    increment();
+    reset();
+  };
 
   const contextProps = {
     hasStarted,
     onStart,
-    currentPlayer,
-    switchPlayer,
-    resetPlayer,
-    players: playerList,
+    Game,
     turnCount,
-    resetCount: reset,
-    increment,
-    totalTurns,
-    GameBoard,
     winStates,
     haveWinner,
-    onWinner,
-    draggableEnabled
+    draggableEnabled,
+    onReset
   };
 
   return (

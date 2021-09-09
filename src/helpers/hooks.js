@@ -19,8 +19,9 @@ export const useCounter = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   return {
-    turnCount: state.count,
+    count: state.count,
     increment: () => dispatch({ type: "increment" }),
+    decrement: () => dispatch({ type: "decrement" }),
     reset: () => dispatch({ type: "reset" })
   };
 };
@@ -34,7 +35,7 @@ export const usePlayerState = (players) => {
 
   return {
     currentPlayer,
-    switchPlayer: () => setPlayer(nextPlayer()),
+    nextPlayer: () => setPlayer(nextPlayer()),
     resetPlayer: () => setPlayer(players[0])
   };
 };

@@ -23,7 +23,7 @@ const buildGamePieces = ({ totalTurns, players, turnCount }) => {
 
 const GameBoardContainer = () => {
   const { draggableEnabled } = useContext(AppContext);
-  const { haveWinner, onReset, turnCount, totalTurns, players } =
+  const { haveWinner, winner, onReset, turnCount, totalTurns, players } =
     usePlayLogic();
 
   const nextPieces = useMemo(
@@ -56,9 +56,7 @@ const GameBoardContainer = () => {
         onClose={onReset}
         buttonText="REPLAY"
       >
-        {haveWinner && haveWinner.winner !== "tie"
-          ? `Player ${haveWinner.winner} Wins!`
-          : "TIE!"}
+        {haveWinner && winner !== "tie" ? `Player ${winner} Wins!` : "TIE!"}
       </Modal>
     </div>
   );

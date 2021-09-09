@@ -14,12 +14,9 @@ const SubTitle = ({ isBoardFilled, currentPlayer }) => {
 };
 
 const GameView = (props) => {
-  const { currentPlayer, isBoardFilled } = usePlayLogic();
+  const { currentPlayer, isBoardFilled, name } = usePlayLogic();
   return (
-    <Layout
-      title="Tic Tac Toe"
-      subTitle={SubTitle({ isBoardFilled, currentPlayer })}
-    >
+    <Layout title={name} subTitle={SubTitle({ isBoardFilled, currentPlayer })}>
       <GameBoard />
     </Layout>
   );

@@ -3,24 +3,16 @@ import User from "./User";
 /**
  * @class Player
  *
+ * @param {Object} user userObject.
+ *    @param {Int} id id.
+ *    @param {String} username username.
+ *    @param {String} name name.
  * @param {String} piece Piece name.
  */
 class Player extends User {
   constructor(props) {
-    super(props);
+    super(props.user);
     this.piece = props.piece || "";
-  }
-}
-
-/**
- * @class PlayerMoves
- */
-export class PlayerMoves extends Player {
-  place(field) {
-    // get board from memory
-    // check space is available on board
-    // place piece
-    console.log(`Placing piece ${this.piece} on ${field}`);
   }
 }
 
