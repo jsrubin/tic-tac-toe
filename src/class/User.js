@@ -11,9 +11,9 @@ class User {
   #name = "";
 
   constructor(props) {
-    this.#id = props.id;
+    this.#id = props.id || new Date().getTime();
     this.#name = props.name;
-    this.#username = props.username;
+    this.#username = props.username || props.name;
   }
 
   get id() {

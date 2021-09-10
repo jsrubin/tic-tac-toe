@@ -1,55 +1,86 @@
 import React, { useState, useMemo } from "react";
 import Board from "../class/Board";
-import Player, { PlayerMoves } from "../class/Player";
-import { useCounter, usePlayerState } from "../helpers/hooks";
+import TicTacToe from "../class/TicTacToe";
+import Player from "../class/Player";
+import { useCounter } from "../helpers/hooks";
 import config from "../config/default.json";
 
 export const AppContext = React.createContext({});
 
 const addPlayer = (player) => {
-  const p = new Player(player);
-  return new PlayerMoves(p);
+  return new Player({ user: player, ...player });
 };
 
-const setupPlayers = (players) => {
+const addPlayers = (players) => {
   return players.map((player) => addPlayer(player));
 };
 
 const AppContextProvider = (props) => {
   const { children } = props;
 
-  const { boardDimension, players, winStates, draggableEnabled } = config;
-  const playerList = setupPlayers(players);
+  const {
+    boardDimension,
+    winStates,
+    players: playerConfig,
+    draggableEnabled
+  } = config;
 
-  const GameBoard = useMemo(() => {
-    return new Board();
-  }, []);
-
-  const { turnCount, increment, reset } = useCounter();
-  const { currentPlayer, switchPlayer, resetPlayer } =
-    usePlayerState(playerList);
+  const {
+    count: turnCount,
+    increment: incrementTurn,
+    reset: resetTurn
+  } = useCounter();
+  const { count: gameCount, increment: incrementGame } = useCounter(1);
 
   const [hasStarted, onStart] = useState(false);
   const [haveWinner, onWinner] = useState(false);
+  const [aiOpponent, onPlayAi] = useState(false);
 
-  const totalTurns = boardDimension[0] * boardDimension[1];
+  const hasAiOpponent = aiOpponent ? true : false;
+  const players = useMemo(
+    () => {
+      if (hasAiOpponent) {
+        playerConfig[1].name = "AI";
+        return addPlayers(playerConfig);
+      }
+      return addPlayers(playerConfig);
+    }, // eslint-disable-next-line
+    [hasAiOpponent]
+  );
+
+  const Game = useMemo(
+    () => {
+      if (hasStarted) {
+        const board = new Board({ boardDimension, winStates });
+        return new TicTacToe({
+          players,
+          GameBoard: board,
+          incrementTurn,
+          onWinner
+        });
+      }
+    }, // eslint-disable-next-line
+    [hasStarted, gameCount, hasAiOpponent]
+  );
+
+  const onReset = () => {
+    onWinner(false);
+    incrementGame();
+    resetTurn();
+  };
 
   const contextProps = {
     hasStarted,
     onStart,
-    currentPlayer,
-    switchPlayer,
-    resetPlayer,
-    players: playerList,
+    Game,
+    players,
     turnCount,
-    resetCount: reset,
-    increment,
-    totalTurns,
-    GameBoard,
-    winStates,
     haveWinner,
-    onWinner,
-    draggableEnabled
+    draggableEnabled,
+    onReset,
+    hasAiOpponent,
+    aiOpponent,
+    onPlayAi
   };
 
   return (

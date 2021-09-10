@@ -4,7 +4,7 @@ import { AppContext } from "../providers/AppProviderContext";
 import { HELLO_QUERY } from "../api";
 
 export const useStartLogic = () => {
-  const { hasStarted, onStart } = useContext(AppContext);
+  const { hasStarted, onStart, onPlayAi, players } = useContext(AppContext);
 
   const { data, loading } = useQuery(HELLO_QUERY);
 
@@ -17,6 +17,7 @@ export const useStartLogic = () => {
     hasStarted,
     onClick: () => {
       onStart(true);
+      onPlayAi(players[1]);
     },
     onlineEnabled,
     titleMsg: loading

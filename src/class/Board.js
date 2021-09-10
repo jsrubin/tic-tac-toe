@@ -16,14 +16,14 @@ class Board {
       props.dimension.length === 2
         ? props.dimension
         : boardDimension;
-    this.winConditions = winStates;
+    this.winConditions = props.winStates || winStates;
     // initialize board
-    this.board = this.generateBoard(this.boardDimension);
+    this.board = this._generateBoard(this.boardDimension);
     this.totalTurns = this.boardDimension[0] * this.boardDimension[1];
   }
 
   // build board
-  generateBoard() {
+  _generateBoard() {
     const board = [];
     for (let row = 0; row < this.boardDimension[0]; row++) {
       const cols = [];
@@ -69,7 +69,7 @@ class Board {
 
   // re-initialize board
   reset() {
-    this.board = this.generateBoard(this.boardDimension);
+    this.board = this._generateBoard(this.boardDimension);
   }
 }
 

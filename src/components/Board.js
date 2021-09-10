@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import styled from "styled-components";
-import { usePlayLogic } from "../biz/playLogic";
 
 const Table = styled.table`
   font-size: 2.5rem;
@@ -69,20 +68,19 @@ const buildGameBoard = ({ boardState, onClick, onDrop, highlightCols }) => {
   return board;
 };
 
-const Board = () => {
-  const { boardState, onPlacePiece, currentPlayer, haveWinner } =
-    usePlayLogic();
+const Board = (props) => {
+  const { boardState, onClick, turnCount, ended, highlightCols } = props;
 
   const board = useMemo(
     () => {
       return buildGameBoard({
         boardState,
-        onClick: onPlacePiece,
-        onDrop: onDrop(onPlacePiece),
-        highlightCols: haveWinner.winState
+        onClick,
+        onDrop: onDrop(onClick),
+        highlightCols
       });
     }, // eslint-disable-next-line
-    [currentPlayer.id, haveWinner]
+    [turnCount, ended]
   );
 
   return (

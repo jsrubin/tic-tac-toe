@@ -15,12 +15,16 @@ function reducer(state, action) {
   }
 }
 
-export const useCounter = () => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+export const useCounter = (initVal) => {
+  const [state, dispatch] = useReducer(
+    reducer,
+    initVal ? { count: initVal } : initialState
+  );
 
   return {
-    turnCount: state.count,
+    count: state.count,
     increment: () => dispatch({ type: "increment" }),
+    decrement: () => dispatch({ type: "decrement" }),
     reset: () => dispatch({ type: "reset" })
   };
 };
@@ -34,7 +38,7 @@ export const usePlayerState = (players) => {
 
   return {
     currentPlayer,
-    switchPlayer: () => setPlayer(nextPlayer()),
+    nextPlayer: () => setPlayer(nextPlayer()),
     resetPlayer: () => setPlayer(players[0])
   };
 };
