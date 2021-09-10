@@ -11,50 +11,76 @@ const addPlayer = (player) => {
   return new Player({ user: player, ...player });
 };
 
-const setupPlayers = (players) => {
+const addPlayers = (players) => {
   return players.map((player) => addPlayer(player));
 };
 
 const AppContextProvider = (props) => {
   const { children } = props;
 
-  const { boardDimension, players, winStates, draggableEnabled } = config;
-  const playerList = setupPlayers(players);
+  const {
+    boardDimension,
+    winStates,
+    players: playerConfig,
+    draggableEnabled
+  } = config;
 
-  const { count: turnCount, increment: incrementTurn, reset } = useCounter();
-  const { count, increment } = useCounter();
+  const {
+    count: turnCount,
+    increment: incrementTurn,
+    reset: resetTurn
+  } = useCounter();
+  const { count: gameCount, increment: incrementGame } = useCounter(1);
 
   const [hasStarted, onStart] = useState(false);
   const [haveWinner, onWinner] = useState(false);
+  const [aiOpponent, onPlayAi] = useState(false);
+
+  const hasAiOpponent = aiOpponent ? true : false;
+  const players = useMemo(
+    () => {
+      if (hasAiOpponent) {
+        playerConfig[1].name = "AI";
+        return addPlayers(playerConfig);
+      }
+      return addPlayers(playerConfig);
+    }, // eslint-disable-next-line
+    [hasAiOpponent]
+  );
 
   const Game = useMemo(
     () => {
-      const board = new Board({ boardDimension });
-      return new TicTacToe({
-        players: playerList,
-        GameBoard: board,
-        incrementTurn,
-        onWinner
-      });
+      if (hasStarted) {
+        const board = new Board({ boardDimension, winStates });
+        return new TicTacToe({
+          players,
+          GameBoard: board,
+          incrementTurn,
+          onWinner
+        });
+      }
     }, // eslint-disable-next-line
-    [count]
+    [hasStarted, gameCount, hasAiOpponent]
   );
 
   const onReset = () => {
     onWinner(false);
-    increment();
-    reset();
+    incrementGame();
+    resetTurn();
   };
 
   const contextProps = {
     hasStarted,
     onStart,
     Game,
+    players,
     turnCount,
-    winStates,
     haveWinner,
     draggableEnabled,
-    onReset
+    onReset,
+    hasAiOpponent,
+    aiOpponent,
+    onPlayAi
   };
 
   return (

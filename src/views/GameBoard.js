@@ -1,5 +1,6 @@
 import React, { useContext, useMemo } from "react";
 import { usePlayLogic } from "../biz/playLogic";
+// import { useAiLogic } from "../biz/aiLogic";
 import Modal from "../components/Modal";
 import GameBoard from "../components/Board";
 import Piece from "../components/Piece";
@@ -23,15 +24,39 @@ const buildGamePieces = ({ totalTurns, players, turnCount }) => {
 
 const GameBoardContainer = () => {
   const { draggableEnabled } = useContext(AppContext);
-  const { haveWinner, winner, onReset, turnCount, totalTurns, players } =
-    usePlayLogic();
+  const {
+    haveWinner,
+    winner,
+    onReset,
+    turnCount,
+    totalTurns,
+    players,
+    boardState,
+    onPlacePiece,
+    currentPlayer,
+    winState
+  } = usePlayLogic();
+
+  // useAiLogic();
 
   const nextPieces = useMemo(
     () => {
-      return buildGamePieces({ totalTurns, players, turnCount });
+      if (draggableEnabled) {
+        return buildGamePieces({ totalTurns, players, turnCount });
+      }
+      return;
     }, // eslint-disable-next-line
     [turnCount]
   );
+
+  const boardProps = {
+    boardState,
+    onClick: onPlacePiece,
+    currentPlayer,
+    turnCount,
+    ended: haveWinner,
+    highlightCols: winState
+  };
 
   return (
     <div>
@@ -48,7 +73,7 @@ const GameBoardContainer = () => {
             {nextPieces}
           </div>
         ) : null}
-        <GameBoard />
+        <GameBoard {...boardProps} />
       </div>
       <Modal
         title="GAME OVER"

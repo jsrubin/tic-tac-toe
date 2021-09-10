@@ -15,8 +15,11 @@ function reducer(state, action) {
   }
 }
 
-export const useCounter = () => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+export const useCounter = (initVal) => {
+  const [state, dispatch] = useReducer(
+    reducer,
+    initVal ? { count: initVal } : initialState
+  );
 
   return {
     count: state.count,

@@ -16,7 +16,7 @@ class Board {
       props.dimension.length === 2
         ? props.dimension
         : boardDimension;
-    this.winConditions = winStates;
+    this.winConditions = props.winStates || winStates;
     // initialize board
     this.board = this._generateBoard(this.boardDimension);
     this.totalTurns = this.boardDimension[0] * this.boardDimension[1];

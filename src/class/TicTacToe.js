@@ -6,7 +6,6 @@ import Game from "./Game";
  * @param {String} name Name.
  */
 class TicTacToe extends Game {
-  #name = "Tic Tac Toe";
   #winner = false;
   #winState = false;
   #playerTurn;
@@ -15,7 +14,7 @@ class TicTacToe extends Game {
     if (!props || !props.players || !props.GameBoard) {
       throw Error("Required constructor params missing: players, GameBoard");
     }
-    super(props);
+    super({ ...props, name: "Tic Tac Toe" });
 
     this.players = props.players;
     this.GameBoard = props.GameBoard;
@@ -24,10 +23,6 @@ class TicTacToe extends Game {
     this.onWinner = props.onWinner;
 
     super.start();
-  }
-
-  get name() {
-    return this.#name;
   }
 
   increment() {
@@ -39,7 +34,7 @@ class TicTacToe extends Game {
   }
 
   get winner() {
-    return this.#winner;
+    return this.#winner.name;
   }
 
   get winState() {
@@ -51,30 +46,28 @@ class TicTacToe extends Game {
     if (super.status === "ended") {
       return "game has ended";
     }
-    console.log(`Turn ${this.#name} on ${cell}`);
+
     // is move allowed
     if (this.GameBoard.isSpaceOpen(cell)) {
       // place piece
       this.GameBoard.update(cell, this.#playerTurn.piece);
-      this.increment();
     } else {
       return "space has been taken";
     }
     // check for end game
     const winStateFound = this.GameBoard.hasWinner();
     if (winStateFound) {
-      this.#winner = this.#playerTurn.name;
+      this.#winner = this.#playerTurn;
       this.#winState = winStateFound;
-      this.onWinner(true);
-      super.end();
+      this.end();
     } else if (this.GameBoard.isBoardFilled()) {
       // check for more moves, else tie
-      this.#winner = "tie";
-      this.onWinner(true);
-      super.end();
+      this.#winner = { name: "tie" };
+      this.end();
     } else {
       // next turn
       this.nextTurn();
+      this.increment(); // trigger state change
     }
   }
 
@@ -82,6 +75,22 @@ class TicTacToe extends Game {
     this.#playerTurn = this.players.find(
       (player) => player.id !== this.#playerTurn.id
     );
+  }
+
+  end() {
+    super.end();
+    if (this.#winner.name === "tie") {
+      this.players.forEach((player) => player.incrementTie());
+    } else {
+      this.players.forEach((player) => {
+        if (this.#winner.id === player.id) {
+          player.incrementWin();
+        } else {
+          player.incrementLoss();
+        }
+      });
+    }
+    this.onWinner(true);
   }
 }
 
