@@ -45,6 +45,9 @@ class Board {
   }
 
   isSpaceOpen(cell) {
+    if (typeof cell !== "string") {
+      return false;
+    }
     const dim = cell.split(",").map((val) => parseInt(val));
     return !this.board[dim[0]][dim[1]].value ? true : false;
   }

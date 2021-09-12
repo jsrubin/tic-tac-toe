@@ -2,10 +2,39 @@ import { useContext, useMemo } from "react";
 import { AppContext } from "../providers/AppProviderContext";
 import { useAiLogic } from "./aiLogic";
 
+const findOpponentPiece = ({ players, currentPlayer }) => {
+  return players.reduce((acc, player) => {
+    if (player.id !== currentPlayer.id) {
+      acc = player.piece;
+    }
+    return acc;
+  }, "");
+};
+
+const moveAI = ({
+  algoDefensive,
+  Game,
+  findOpponentPiece,
+  players,
+  turnCount
+}) => {
+  return algoDefensive({
+    board: Game.GameBoard.board,
+    winConditions: Game.GameBoard.winConditions,
+    oppoenentPiece: findOpponentPiece({
+      players,
+      currentPlayer: Game.currentPlayer
+    }),
+    boardDimension: Game.GameBoard.boardDimension,
+    isSpaceOpen: (cell) => Game.GameBoard.isSpaceOpen(cell),
+    turnCount
+  });
+};
+
 export const usePlayLogic = () => {
-  const { Game, turnCount, haveWinner, onReset, hasAiOpponent } =
+  const { Game, turnCount, haveWinner, onReset, hasAiOpponent, players } =
     useContext(AppContext);
-  const { algoRandom } = useAiLogic();
+  const { algoDefensive } = useAiLogic();
 
   const onPlacePiece = useMemo(
     () => {
@@ -15,11 +44,14 @@ export const usePlayLogic = () => {
           // if playing against AI then, do AI turn
           if (hasAiOpponent) {
             setTimeout(() => {
-              const cellAI = algoRandom({
-                boardDimension: Game.GameBoard.boardDimension,
-                isSpaceOpen: (cell) => Game.GameBoard.isSpaceOpen(cell)
+              const aiCell = moveAI({
+                algoDefensive,
+                Game,
+                findOpponentPiece,
+                players,
+                turnCount
               });
-              Game.turn(cellAI);
+              Game.turn(aiCell);
             }, 500);
           }
         }
