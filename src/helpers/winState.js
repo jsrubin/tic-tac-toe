@@ -175,8 +175,6 @@ const buildWinStates = (boardDimension, match) => {
     ...leftDiagonalWinws,
     ...rightDiagonalWinws
   ];
-  console.log("\n\nwin states");
-  console.log(wins);
   return wins;
 };
 
