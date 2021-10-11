@@ -78,35 +78,40 @@ const findWins = ({ range, matchInRow, rowOrCol }) => {
 };
 
 const recursiveFindDiagonalWins = ({
-  startIndex = 0,
+  rowIndex,
+  colIndex = 0,
   range,
   matchInRow,
   winCells = [],
   rowOrCol
 }) => {
   // if not enough cells remain to make a win then return
-  if (range - startIndex < matchInRow) {
+  if (range - colIndex < matchInRow) {
     return winCells;
   }
   let cnt = 0;
   let cells = [];
-  for (let idx = startIndex; idx < range; idx++) {
-    if (cnt < matchInRow) {
+  let row = rowIndex;
+  for (let col = colIndex; col < range; col++) {
+    if (cnt < matchInRow && cells.length < matchInRow && row < range) {
       if (rowOrCol === "rightDiagonal") {
-        cells.push([idx, idx]);
+        cells.push([row, col]);
       } else {
-        cells.push([idx, range - 1 - idx]);
+        cells.push([row, range - 1 - col]);
       }
     }
+    row++;
     cnt++;
-    if (cnt === matchInRow) {
+    if (cnt === matchInRow && cells.length === matchInRow) {
       // push a win
       winCells.push(cells);
     }
   }
+
   // recursively look for more wins
   return recursiveFindDiagonalWins({
-    startIndex: startIndex + 1,
+    rowIndex,
+    colIndex: colIndex + 1,
     range,
     matchInRow,
     winCells,
@@ -127,12 +132,15 @@ const findDiagonalWin = ({ range, matchInRow, rowOrCol }) => {
     }
     winCells.push(cells);
   } else {
-    const wins = recursiveFindDiagonalWins({
-      range,
-      matchInRow,
-      rowOrCol
-    });
-    winCells = [...wins];
+    for (let row = 0; row < range; row++) {
+      const wins = recursiveFindDiagonalWins({
+        range,
+        matchInRow,
+        rowOrCol,
+        rowIndex: row
+      });
+      winCells = [...winCells, ...wins];
+    }
   }
   return winCells;
 };
@@ -167,7 +175,8 @@ const buildWinStates = (boardDimension, match) => {
     ...leftDiagonalWinws,
     ...rightDiagonalWinws
   ];
-
+  console.log("\n\nwin states");
+  console.log(wins);
   return wins;
 };
 

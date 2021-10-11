@@ -69,7 +69,7 @@ const Score = (props) => {
 };
 
 const GameView = () => {
-  const { name, players, haveWinner, currentPlayer, turnCount } =
+  const { name, subTitle, players, haveWinner, currentPlayer, turnCount } =
     usePlayLogic();
 
   const playerCount = players && players.length > 0 ? players.length : 0;
@@ -85,7 +85,7 @@ const GameView = () => {
   );
 
   return (
-    <Layout title={name} subTitle={""}>
+    <Layout title={name} subTitle={subTitle}>
       <Score players={scoreData} currentPlayer={currentPlayer} />
       <GameBoard />
     </Layout>

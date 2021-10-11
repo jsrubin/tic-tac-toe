@@ -1,5 +1,5 @@
 import config from "../config/default.json";
-const { boardDimension, winStates } = config;
+const { boardDimension, defaultWinStates, defaultMatch } = config;
 
 /**
  * @class
@@ -16,7 +16,8 @@ class Board {
       props.dimension.length === 2
         ? props.dimension
         : boardDimension;
-    this.winConditions = props.winStates || winStates;
+    this.winConditions = props.winStates || defaultWinStates;
+    this.matchInRow = props.defaultMatch || defaultMatch;
     // initialize board
     this.board = this._generateBoard(this.boardDimension);
     this.totalTurns = this.boardDimension[0] * this.boardDimension[1];
@@ -52,16 +53,36 @@ class Board {
     return !this.board[dim[0]][dim[1]].value ? true : false;
   }
 
+  /*
+      [
+        [0, 3] = use first to set pieceValue
+        [1, 2]
+        [2, 1]
+        [3, 0]
+      ]
+  */
   hasWinner() {
     return this.winConditions.find((winCondition) => {
       const pieceValue =
         this.board[winCondition[0][0]][winCondition[0][1]].value;
-      const compare1 = this.board[winCondition[1][0]][winCondition[1][1]].value;
-      const compare2 = this.board[winCondition[2][0]][winCondition[2][1]].value;
-      if (pieceValue && pieceValue === compare1 && pieceValue === compare2) {
-        return true;
+      if (!pieceValue) {
+        return false;
       }
-      return false;
+      const hasMatch = Array.from(Array(this.matchInRow), (x, i) => i).reduce(
+        (acc, i) => {
+          if (winCondition.length > i + 1) {
+            if (
+              pieceValue !==
+              this.board[winCondition[i + 1][0]][winCondition[i + 1][1]].value
+            ) {
+              return false;
+            }
+          }
+          return acc;
+        },
+        true
+      );
+      return hasMatch;
     });
   }
 
