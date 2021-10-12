@@ -3,6 +3,7 @@ import Board from "../class/Board";
 import TicTacToe from "../class/TicTacToe";
 import Player from "../class/Player";
 import { useCounter } from "../helpers/hooks";
+import { buildWinStates } from "../helpers/winState";
 import config from "../config/default.json";
 
 export const AppContext = React.createContext({});
@@ -20,7 +21,8 @@ const AppContextProvider = (props) => {
 
   const {
     boardDimension,
-    winStates,
+    defaultMatch,
+    defaultWinStates,
     players: playerConfig,
     draggableEnabled
   } = config;
@@ -48,14 +50,18 @@ const AppContextProvider = (props) => {
     [hasAiOpponent]
   );
 
-  const getWinStates = ({ boardDimension, winStates }) => {
-    return winStates;
+  const getWinStates = ({ boardDimension, defaultMatch, defaultWinStates }) => {
+    return buildWinStates(boardDimension, defaultMatch) || defaultWinStates;
   };
 
   const Game = useMemo(
     () => {
       if (hasStarted) {
-        const initWinStates = getWinStates({ boardDimension, winStates });
+        const initWinStates = getWinStates({
+          boardDimension,
+          defaultMatch,
+          defaultWinStates
+        });
         const board = new Board({ boardDimension, winStates: initWinStates });
         return new TicTacToe({
           players,

@@ -17,7 +17,8 @@
             "piece": "O"
         }
     ],
-    "winStates": [
+    "defaultMatch": 3,
+    "defaultWinStates": [
         [
             [
                 0,
