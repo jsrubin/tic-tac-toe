@@ -32,8 +32,15 @@ const moveAI = ({
 };
 
 export const usePlayLogic = () => {
-  const { Game, turnCount, haveWinner, onReset, hasAiOpponent, players } =
-    useContext(AppContext);
+  const {
+    Game,
+    turnCount,
+    haveWinner,
+    onReset,
+    hasAiOpponent,
+    players,
+    boardDimension
+  } = useContext(AppContext);
   const { algoDefensive } = useAiLogic();
 
   const onPlacePiece = useMemo(
@@ -72,6 +79,6 @@ export const usePlayLogic = () => {
     turnCount,
     totalTurns: Game.GameBoard.totalTurns,
     players: Game.players,
-    name: Game.name
+    name: `${Game.name} ${boardDimension[0]}x${boardDimension[1]}`
   };
 };

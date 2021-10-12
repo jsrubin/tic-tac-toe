@@ -48,10 +48,15 @@ const AppContextProvider = (props) => {
     [hasAiOpponent]
   );
 
+  const getWinStates = ({ boardDimension, winStates }) => {
+    return winStates;
+  };
+
   const Game = useMemo(
     () => {
       if (hasStarted) {
-        const board = new Board({ boardDimension, winStates });
+        const initWinStates = getWinStates({ boardDimension, winStates });
+        const board = new Board({ boardDimension, winStates: initWinStates });
         return new TicTacToe({
           players,
           GameBoard: board,
@@ -80,7 +85,8 @@ const AppContextProvider = (props) => {
     onReset,
     hasAiOpponent,
     aiOpponent,
-    onPlayAi
+    onPlayAi,
+    boardDimension
   };
 
   return (

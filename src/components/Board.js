@@ -30,7 +30,7 @@ const onDrop = (onClick) => {
   };
 };
 
-const buildColumns = (row, cols, onClick, onDrop, highlightCols) => {
+const buildColumns = (row, cols, onClick, onDrop, highlightCols, dimension) => {
   return cols.map((col, i) => {
     const highlight = highlightCols
       ? highlightCols.find((arr) => arr[0] === row && arr[1] === i)
@@ -38,8 +38,8 @@ const buildColumns = (row, cols, onClick, onDrop, highlightCols) => {
     return (
       <Td
         key={`board-col-${i}`}
-        borderBottom={row < 2 ? true : false}
-        borderRight={i < 2 ? true : false}
+        borderBottom={row < dimension ? true : false}
+        borderRight={i < dimension ? true : false}
         onClick={() => onClick(col.cell)}
         onDragOver={allowDrop}
         onDrop={(e) => onDrop(e, col.cell)}
@@ -56,12 +56,25 @@ const buildColumns = (row, cols, onClick, onDrop, highlightCols) => {
   });
 };
 
-const buildGameBoard = ({ boardState, onClick, onDrop, highlightCols }) => {
+const buildGameBoard = ({
+  boardState,
+  onClick,
+  onDrop,
+  highlightCols,
+  dimension
+}) => {
   let board = [];
   boardState.forEach((row, i) => {
     board.push(
       <tr key={`board-row-${i}`}>
-        {buildColumns(i, row, onClick, onDrop, highlightCols)}
+        {buildColumns(
+          i,
+          row,
+          onClick,
+          onDrop,
+          highlightCols,
+          boardState.length - 1
+        )}
       </tr>
     );
   });
