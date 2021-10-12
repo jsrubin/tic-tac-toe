@@ -39,7 +39,8 @@ export const usePlayLogic = () => {
     onReset,
     hasAiOpponent,
     players,
-    boardDimension
+    boardDimension,
+    defaultMatch
   } = useContext(AppContext);
   const { algoDefensive } = useAiLogic();
 
@@ -79,6 +80,7 @@ export const usePlayLogic = () => {
     turnCount,
     totalTurns: Game.GameBoard.totalTurns,
     players: Game.players,
-    name: `${Game.name} ${boardDimension[0]}x${boardDimension[1]}`
+    name: `${Game.name} ${boardDimension[0]}x${boardDimension[1]}`,
+    subTitle: `win by getting ${defaultMatch} in a row`
   };
 };

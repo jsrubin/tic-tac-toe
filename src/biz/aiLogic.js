@@ -1,5 +1,3 @@
-import { arrayOf } from "prop-types";
-
 const algoFirstOpen = ({ boardDimension, isSpaceOpen }) => {
   const length = boardDimension;
   for (let i = 0; i < length[0]; i++) {
@@ -25,17 +23,6 @@ const algoRandom = ({ boardDimension, isSpaceOpen }) => {
   }
   const randomIndex = Math.floor(Math.random() * openCells.length);
   return openCells[randomIndex];
-};
-
-// [ [0,0] ]
-const recurr = (arr) => {
-  if (Array.isArray(arr)) {
-    for (let i = 0; i < arr.length; i++) {
-      return recurr(arr[i]);
-    }
-  }
-  console.log(`found val: ${arr}`);
-  return arr;
 };
 
 const algoDefensiveAlternate = ({
@@ -182,6 +169,7 @@ export const useAiLogic = () => {
   return {
     algoFirstOpen,
     algoRandom,
-    algoDefensive
+    algoDefensive,
+    algoDefensiveAlternate
   };
 };

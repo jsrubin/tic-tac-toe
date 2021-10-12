@@ -92,7 +92,8 @@ const AppContextProvider = (props) => {
     hasAiOpponent,
     aiOpponent,
     onPlayAi,
-    boardDimension
+    boardDimension,
+    defaultMatch
   };
 
   return (
